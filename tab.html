@@ -1,12 +1,15 @@
 <html> 
     <head>
         <style>
+            :root {
+                --tabitha-grid-size: 40px;
+            }
             body {
-                width: 62px;
+                width: calc(var(--tabitha-grid-size) + 22px);
             }
             .grid {
                 display: grid;
-                grid-template-columns: 40px 40px;
+                grid-template-columns: repeat(2, var(--tabitha-grid-size));
                 grid-template-rows: 1fr 1fr;
             }
         </style>
