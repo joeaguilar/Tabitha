@@ -1,6 +1,16 @@
 # Tabitha
 A chrome extension of tab tools
 
+# How to install
+Clone the repo to a place you want the extension to  live.
+
+After you have the repo cloned, go to your extension settings in Chrome by navigating to [chrome://extensions/](chrome://extensions/).
+
+Enable Developer Mode on the right.
+
+Click the "Load unpacked" button and navigate to where you have the extension downloaded and select it. Ensure it is loaded by toggling the extension on. 
+
+
 # -
 Move the tab backwards
 # +
