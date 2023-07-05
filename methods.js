@@ -280,7 +280,7 @@
 	};
 
 	const downloadJSON = (data) => {
-		handleMessage("downloading");
+		// handleMessage("downloading");
 		try {
 			const jsonString = JSON.stringify(data, null, 4);
 			const dLink = document.createElement("a");
@@ -378,7 +378,6 @@
 		const { tabs } = window || {};
 		const { index: lastIndex } = tabs?.pop() || { index: tab.index };
 		moveTab(tab.id, lastIndex, windowId);
-		moveTab();
 	}
 
 	async function moveCurrentTabToStart() {
@@ -388,7 +387,7 @@
 	}
 
 	async function unloadAllTabs() {
-		handleMessage("unlooading...");
+		handleMessage("Tabs Unloading...");
 		const alltargetTabs = await getTabsByQuery({ url: ["*://*/*"] });
 		[...alltargetTabs].forEach(async (tab) => {
 			if (
