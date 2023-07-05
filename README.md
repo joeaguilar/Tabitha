@@ -20,6 +20,7 @@ You can get the font here: https://fonts.google.com/specimen/VT323
 Download and unpack the font and make it so that there is a folder called VT323 with the OFL.txt and the VT323-Regular.tff inside that folder.
 
 The setup should follow this convention:
+
 ![screenshot of VT323](imgs/add_VT323.png)
 
 This repo now includes icons from [iconoir](https://iconoir.com/) and the can be found here [license here](https://github.com/iconoir-icons/iconoir/blob/main/LICENSE).
