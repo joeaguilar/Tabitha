@@ -11,18 +11,21 @@ Enable Developer Mode on the right.
 Click the "Load unpacked" button and navigate to where you have the extension downloaded and select it. Ensure it is loaded by toggling the extension on.
 
 Note: The extension now uses the VT323. I cant just include somebody else's font in this repo so I'll include the instructions to add the font.
+
 	You can get the font here: https://fonts.google.com/specimen/VT323
+
 	Download and unpack the font and make it so that there is a folder called VT323 with the OFL.txt and the VT323-Regular.tff inside that folder.
 
+
+This repo now includes icons from [iconoir](https://iconoir.com/) and the can be found here [license here](https://github.com/iconoir-icons/iconoir/blob/main/LICENSE).
+
+# Start <-
+Move the tab to the start
 # -
 Move the tab backwards
 # +
 Move the tab forwards
-
-# start
-Move the tab to the start
-
-# end
+# End ->
 Move the tab to the end
 
 # Disrcard All
