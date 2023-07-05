@@ -1,26 +1,96 @@
 <html>
     <head>
         <style>
+			@font-face {
+				font-family: "VT323";
+				src: url("VT323/VT323-Regular.ttf");
+			}
             :root {
 				--tabitha-grid-size: 40px;
+				--tabitha-max-chonk-size: calc(calc(var(--tabitha-grid-size) * 2) - 22px);
             }
             body {
-                width: calc(var(--tabitha-grid-size) + 22px);
+                /* width: calc(var(--tabitha-grid-size) + 22px); */
+				font-family: "VT323", Arial, Helvetica, sans-serif;
+				font-size: 14px;
+				width: calc(var(--tabitha-grid-size) * 3 + -30px);
+				background: #00000000;
             }
-            .grid {
-                display: grid;
-                grid-template-columns: repeat(2, var(--tabitha-grid-size));
-                grid-template-rows: 1fr 1fr;
-            }
+			.grid {
+				display: grid;
+				gap: calc(var(--tabitha-grid-size) / 4);
+				grid-template-columns: repeat(2, var(--tabitha-grid-size));
+				grid-template-rows: var(--tabitha-grid-size);
+			}
+			.grid input, button {
+				visibility:hidden;
+			}
+			.grid label {
+				background-color: #b4e1ff;
+				display: inline-block;
+				min-height: calc(var(--tabitha-grid-size) - 40px);
+				min-width: calc(var(--tabitha-grid-size) - 20px);
+				padding: 4px;
+				text-align: start;
+				border: 1px solid black;
+
+			}
+			.chonk {
+				grid-column: 1 / 3;
+
+				> label small {
+					color: red;
+				}
+
+			}
+			#message-box {
+				overflow: auto;
+
+			}
         </style>
     </head>
     <body>
         <div class="grid">
-            <div id="move-tab-up"><button id="move-down">-</button></div>
-            <div id="move-tab-down"><button id="move-up">+</button></div>
-            <div id="discard-all"><button id="unload-all">Discard All</button></div>
+            <div id="move-tab-down">
+				<label for="move-down">-</label>
+				<button id="move-down">-</button>
+			</div>
+            <div id="move-tab-up">
+				<label for="move-up">+</label>
+				<button id="move-up">+</button>
+			</div>
+			<div id="move-tab-start">
+				<label for="move-start">start</label>
+				<button id="move-start">start</button>
+			</div>
+            <div id="move-tab-end">
+				<label for="move-end">end</label>
+				<button id="move-end">end</button>
+			</div>
+            <div class="chonk" id="discard-all">
+				<label for="unload-all">Discard All Tabs</label>
+				<button id="unload-all"></button>
+			</div>
+            <div class="chonk" id="download-links">
+				<label for="download-link-backup">Download Active Session <small>[beta]</small></label>
+				<button id="download-link-backup"></button>
+			</div>
+			<div class="chonk" id="download-active-window">
+				<label for="download-active-window-session">Download Active Window Session</label>
+				<button id="download-active-window-session"></button>
+			</div>
+			<!-- <div class="chonk" id="download-links">
+				<label for="download-link-options">Feature Test</label>
+				<button id="download-link-options"></button>
+			</div> -->
+            <div class="chonk" id="download-links">
+				<label for="upload-and-open">Upload and Open</label>
+				<input id="upload-and-open" type="file" />
+			</div>
+			<div id="message-box" class="chonk">
+				<p id="last-message">message</p>
+			</div>
         </div>
-            <script src="methods.js"></script>
             <script src="./methods.js"></script>
 
     </body>

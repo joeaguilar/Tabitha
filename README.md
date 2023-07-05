@@ -8,13 +8,31 @@ After you have the repo cloned, go to your extension settings in Chrome by navig
 
 Enable Developer Mode on the right.
 
-Click the "Load unpacked" button and navigate to where you have the extension downloaded and select it. Ensure it is loaded by toggling the extension on. 
+Click the "Load unpacked" button and navigate to where you have the extension downloaded and select it. Ensure it is loaded by toggling the extension on.
 
+Note: The extension now uses the VT323. I cant just include somebody else's font in this repo so I'll include the instructions to add the font.
+	You can get the font here: https://fonts.google.com/specimen/VT323
+	Download and unpack the font and make it so that there is a folder called VT323 with the OFL.txt and the VT323-Regular.tff inside that folder.
 
 # -
 Move the tab backwards
 # +
 Move the tab forwards
 
+# start
+Move the tab to the start
+
+# end
+Move the tab to the end
+
 # Disrcard All
 Unload all open tabs - This action frees up memory by removing all tabs from memory wihtout closing and will require a reload for the tab content to come back.
+
+# Download Active Session [beta]
+Download a JSON file of your open windows, tabs and groups.
+
+# Download Active Window
+Download a JSON file of your active window, tabs and groups.
+
+# Upload and Open
+Uploads and opens a JSON session.

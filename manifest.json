@@ -1,9 +1,9 @@
 {
 	"name": "Tabitha",
 	"description": "A simple tab manager",
-	"version": "0.1",
+	"version": "0.1.0",
 	"manifest_version": 3,
-	"permissions": ["tabs", "tabGroups", "bookmarks"],
+	"permissions": ["tabs", "tabGroups", "bookmarks", "windows"],
 	"action": {
 		"default_title": "Tabitha",
 		"defaul_icon": "icon.png",
