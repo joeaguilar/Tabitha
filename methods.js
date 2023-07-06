@@ -477,7 +477,7 @@
 										collapsed,
 									},
 									function () {
-										tabIds.map(discardTab);
+										// tabIds.map(discardTab);
 										// Tab group created and color updated
 									}
 								);
