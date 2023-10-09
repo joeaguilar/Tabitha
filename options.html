@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html>
+    <head>
+		<meta content="width=device-width, initial-scale=1" name="viewport" />
+        <style>
+			@font-face {
+				font-family: "VT323";
+				src: url("VT323/VT323-Regular.ttf");
+			}
+            :root {
+				--tabitha-font-color: rebeccapurple;
+				/* --tabitha-font-color: #126a9d; */
+				--tabitha-body-color: #c1bbdc;
+				--tabitha-grid-size: 20px;
+				--tabitha-grid-columns: 4;
+				--tabitha-max-chonk-size: calc(calc(var(--tabitha-grid-size) * 2) - 22px);
+            }
+			body {
+				font-size: 16px;
+				font-family: "VT323", Arial, Helvetica, sans-serif;
+				color:  var(--tabitha-font-color);
+				background-color: var(--tabitha-body-color);
+				padding: 0;
+				margin: 0;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				flex-flow: column;
+			}
+
+			img {
+				filter: grayscale(0.2) opacity(0.9)  brightness(.99) saturate(137%);
+				/* filter: grayscale(0.2) opacity(0.9)  brightness(.99); */
+				/* filter: sepia(100%) hue-rotate(80deg) saturate(137%); */
+			}
+
+			button {
+				font-family: inherit;
+				background-color: #faffde;
+				border-radius: 4px;
+				display: inline-block;
+				min-height: calc(var(--tabitha-grid-size) - 40px);
+				min-width: calc(var(--tabitha-grid-size) - 20px);
+				padding: 4px 4px 0;
+				text-align: start;
+				/* border: 1px solid #bd9ef6; */
+				border: 1px solid #6c77a6;
+				padding-bottom: 4px;
+				position: relative;
+				transition: width 2s, height 2s, background-color .5s, color .5s, rotate 2s;
+				margin-left: 4px;
+			}
+			button:hover {
+				background-color: #acffc8;
+				/* background-color: #d5e7db; */
+				/* background-color: #de2d86; */
+				/* color: white; */
+			}
+			/* .button:hover::before {
+				content: '';
+				position: absolute;
+				margin: auto;
+				right: 0;
+				left: 0;
+				top: 0;
+				width: 100%;
+				height: 4px;
+				background: #101316;
+				border-radius: 0;
+			} */
+			button:hover::after {
+				content: '';
+				position: absolute;
+				margin: auto;
+				right: 0;
+				left: 0;
+				bottom: 0;
+				width: 100%;
+				height: 2px;
+				background: #6c77a6;
+				border-radius: 0;
+
+			}
+
+			#controls {
+				/* border: 1px dashed rebeccapurple; */
+				padding: 2px;
+				width: 100%;
+				text-align: center;
+			}
+
+			/* Scroll bar style begin */
+			.grid-boy > div::-webkit-scrollbar-track {
+				background-color: var(--tabitha-body-color);
+			}
+
+			.grid-boy > div::-webkit-scrollbar {
+				/* width: 4px; */
+				/* height: 4px; */
+				background-color: var(--tabitha-body-color);
+			}
+
+			.grid-boy > div::-webkit-scrollbar-thumb {
+				border: 6px solid rgba(0, 0, 0, 0);
+				background-clip: padding-box;
+				border-radius: 9999px;
+				background-color: var(--tabitha-font-color);
+				/* background-color: #AAAAAA; */
+			}
+
+			.grid-boy > div::-webkit-scrollbar-corner {
+				background:var(--tabitha-body-color);
+			}
+
+			/* Scroll bar style end */
+
+			.grid-boy {
+				display: grid;
+				grid-template-columns: 50% 50%;
+			}
+
+			.grid-boy.full {
+				grid-template-columns: 100% 0;
+
+			}
+
+			.grid-boy.full > #tab-items2 {
+				height: 100%;
+			}
+
+
+			.grid-boy > div {
+				/* border: 1px solid black; */
+				width: 740px;
+			}
+
+			/* #selected-tabs > h2 {
+				text-align: center;
+			} */
+
+			.grid-boy > div > h2 {
+				text-align: center;
+			}
+
+			#tab-items {
+				/* display: grid; */
+                /* place-content: center; */
+                /* min-height: 100vh; */
+				/* grid-template-columns: repeat(10, 100px);
+				grid-template-rows: repeat(10, 100px);
+				grid-auto-rows: 100px;
+				grid-auto-columns: 100px; */
+				display: flex;
+				flex-wrap: wrap;
+            }
+
+			#tab-items2 {
+				position: relative;
+				/* background-image: linear-gradient(
+					to bottom,
+					var(--tabitha-font-color) 0%,
+					rgba(0, 0, 0, 0) 10%,
+					rgba(0, 0, 0, 0) 90%,
+					var(--tabitha-font-color) 100%); */
+			}
+
+			/* #tab-items2:after { */
+				/* content:''; */
+				/* width:100%;
+				height:100%;
+				position:relative;
+				left:0;
+				top:0;
+				background:linear-gradient(transparent 150px, var(--tabitha-body-color)); */
+
+				/* display: block; */
+				/* width: 100%; */
+				/* height: 20em; */
+				/* position: sticky; */
+				/* left: 0; */
+				/* bottom: 0; */
+				/* right: 0; */
+				/* background: linear-gradient(transparent 150px, #2e00ff); */
+			/* } */
+
+			#tab-items2:after {
+				content: '';
+				display: block;
+				width: 100%;
+				height: 84px;
+				position: sticky;
+				/* left: 0; */
+				bottom: 0;
+				/* right: 0; */
+				background: linear-gradient(transparent, var(--tabitha-body-color));
+			}
+			.tab-actions {
+				margin-bottom: 4px;
+				border: 1px dashed rebeccapurple;
+				border-radius: 4px;
+				padding: 2px;
+				margin: auto;
+				width: 100%;
+				text-align: center;
+				margin-bottom: 2px;
+			}
+
+			.tab-actions > button {
+				font-family: inherit;
+			}
+
+			.tab-wrapper {
+				display: flex;
+				flex-wrap: wrap;
+				width: 720px;
+				margin-bottom: 18px;
+				padding: 3px;
+				border: 1px solid rebeccapurple;
+				border-radius: 4px;
+				align-items: end;
+				margin: 4px auto;
+			}
+
+			.tab-wrapper:last-child {
+
+			}
+
+			/* .tab-wrapper::before {
+				content: '';
+				height: 48px;
+			} */
+
+			.tab-wrapper.selected {
+				background: #faffde;
+			}
+
+			.tab-wrapper .group {
+				/* width:100px; */
+			}
+
+			.group {
+				display: inline;
+				/* display: flex; */
+				/* flex-wrap: wrap; */
+				width:auto;
+				padding-top: 2px;
+				/* padding-top: 6px; */
+				/* padding-bottom: 2px; */
+				border-top: 1px solid rebeccapurple;
+				border-radius: 8px;
+			}
+
+			.group.selected {
+				color: rebeccapurple;
+				background: #faffde;
+			}
+
+			.group.selected > span {
+				color: rebeccapurple !important;
+				background: #faffde;
+			}
+
+			.group-name {
+				display: flex;
+				/* flex-basis:100%; */
+				font-size: 12px;
+				margin-left:2px;
+				width: max-content;
+			}
+
+			.tab {
+				display:inline-block;
+				font-size: small;
+				width: fit-content;
+				height: max-content;
+				position: relative;
+				/* padding: 5px; */
+				padding: 2px 2px 0px 2px;
+				border-radius: 4px;
+				border: 1px solid #6c77a6;
+				min-width: 24px;
+				min-height: 27px;
+				/* margin: 6px; */
+				margin:0;
+				/* background: #faffde; */
+				background: var(--tabitha-body-color);
+				transition: width 2s, height 2s, background-color .5s, color .5s, rotate 2s;
+
+			}
+
+			.tab[data-status="loading"] {
+				background:#aaffde !important;
+			}
+			.tab[data-status="complete"] {
+				background: var(--tabitha-body-color);
+			}
+			.tab[data-audible="true"] {
+				background:#7700ff !important;
+			}
+			.tab[data-status="unloaded"] {
+				opacity: 0.6;
+				border: 1px solid #7700ff;
+			}
+
+			p.tab-info-text {
+				max-width: 720px;
+				/* overflow: hidden; */
+				line-break: anywhere;
+				margin: 0 16px 0 0;
+			}
+
+			.tab-info {
+				display: flex;
+				align-items: center;
+				/* justify-content: space-around; */
+				flex: 1 1 auto;
+				width: 100%;
+				border: 1px dashed rebeccapurple;
+				margin: 0px 0 2px;
+				border-radius: 4px;
+			}
+
+			.tab-info > p {
+				width: 100%;
+				display: inline-block;
+				margin: 0;
+			}
+
+			.tab-info > img {
+				width: 48px;
+				height: 48px;
+				margin: 0 24px;
+			}
+
+			.info-wrapper {
+
+			}
+
+			/* .tab::after {
+				content: '';
+				height: 24px;
+				visibility: hidden;
+				display: block;
+			} */
+
+			.tab.selected  {
+				/* background: #6c77a6; */
+				background: #faffde;
+
+			}
+			.tab.selected::after {
+				content: '';
+				position: absolute;
+				margin: auto;
+				top: 0;
+				left: 0;
+				bottom: 0;
+				width: 4px;
+				height: 100%;
+				/* background: #faffde; */
+				border-radius: 36px 0 0 36px;
+
+			}
+
+			.tab.active {
+				background: #aaffde;
+			}
+			.tab.active.selected {
+				background: #b5ffaa;
+			}
+			.tab.duplicate {
+				background: #edc6d9;
+				border: 1px solid darkred;
+			}
+			.tab.duplicate.selected {
+				background: #ffe3de;
+			}
+			.tab.dragover {
+				background: #c2391d;
+			}
+			.tab.dragover.selected {
+				background: #e9bea8;
+			}
+			.tab.dragover::after {
+				content: '';
+				position: absolute;
+				margin: auto;
+				top: 0;
+				left: 0;
+				bottom: 0;
+				width: 4px;
+				height: 100%;
+				background: #b5ffaa;
+				border-radius: 36px 0 0 36px;
+			}
+
+			.tab.dragover.selected {
+				background: #c2751d;
+			}
+			.tab:hover {
+				background: #acffc8;
+			}
+			.tab-title {
+				display:none;
+			}
+			.tab-url {
+				display:none;
+			}
+			.grey {
+				background: #dbcfe6;
+				color: #126a9d;
+			}
+			.blue{
+				background: #6069eb;
+				color: #c1bbdc;
+			}
+			.red {
+				background: #fc5741;
+				color: #faffde;
+			}
+			.yellow {
+				background: #f1f187;
+				color: #126a9d;
+			}
+			.green {
+				background: #98ed98;
+				color: #126a9d;
+			}
+			.pink {
+				background: #ebc0d0;
+				color: #126a9d;
+			}
+			.purple {
+				background: #483081;
+				color: #c1bbdc;
+			}
+			.cyan {
+				background: #97f8f8;
+			}
+			.orange {
+				background: #f3cf8e;
+			}
+
+
+			/* Extra small devices (phones, 600px and down) */
+			/* @media only screen and (max-width: 600px) {
+
+			} */
+			/* Small devices (portrait tablets and large phones, 600px and up) */
+			/* @media only screen and (min-width: 600px) {
+
+			} */
+			/* Medium devices (landscape tablets, 768px and up) */
+			/* @media only screen and (min-width: 768px) {
+
+			} */
+			/* Large devices (laptops/desktops, 992px and up) */
+			/* @media only screen and (min-width: 992px) {
+
+			} */
+			/* Extra large devices (large laptops and desktops, 1200px and up) */
+			@media only screen and (max-width: 1479px) {
+				.grid-boy {
+					display: grid;
+					grid-template-columns: 80%;
+					grid-template-rows: auto auto;
+					width: 100%;
+					justify-content: center;
+				}
+
+				.grid-boy > div {
+					/* border: 1px solid black; */
+					overflow-y: auto;
+					height: 540px;
+					width: 100%;
+					justify-content: center;
+				}
+
+				.tab-wrapper {
+					max-width: 840px;
+					min-width: 554px;
+				}
+
+			}
+
+        </style>
+        <title>Options Page</title>
+		<script src="datautils.js"></script>
+		<script src="options.js"></script>
+
+    </head>
+    <body>
+        <H1>Tabitha</H1>
+        <div id="tab-items"><!-- IS USED --></div>
+		<div id="controls">
+			<button id="open-window">Open Window</button>
+			<button id="open-group">Open Group</button>
+			<button id="export-selected">Export Selected</button>
+			<button id="deselect-all">Deselect All</button>
+			<button id="select-all">Select All</button>
+			<button id="show-groups">Show Groups</button>
+			<button id="show-duplicates">Show Duplicates</button>
+		</div>
+		<div class="grid-boy full">
+	        <div id="tab-items2">
+				<!-- IS USED -->
+				<h2>All Windows & Tabs</h2>
+			</div>
+	        <div id="selected-tabs">
+				<!-- IS USED -->
+				<h2>Selected</h2>
+			</div>
+		</div>
+		<div id="tab-items-3">
+		<div class="tab-wrapper">
+			<div class="tab">
+				<p class="tab-title">Salvatore Ganacci - Sexy Narkoman / Your Mother (Official Music Video) - YouTube</p>
+				<p class="tab-url">https://www.youtube.com/watch?v=L1JOlU_oPyQ</p>
+				<!-- {
+					"active": false,
+					"autoDiscardable": true,
+					"groupId": 2058455774,
+					"height": 1392,
+					"highlighted": false,
+					"incognito": false,
+					"index": 114,
+					"mutedInfo": {
+						"muted": false
+					},
+					"pinned": false,
+					"selected": false,
+					"status": "complete",
+					"title": "Salvatore Ganacci - Sexy Narkoman / Your Mother (Official Music Video) - YouTube",
+					"url": "https://www.youtube.com/watch?v=L1JOlU_oPyQ",
+					"width": 1068,
+					"windowId": 900071125
+			} -->
+
+		</div>
+		<div class="tab">
+			<p class="tab-title">W1-AT – GEONWORKS</p>
+			<p class="tab-url">https://geon.works/collections/w1-a</p>
+			<img src="https://geon.works/cdn/shop/files/16826b2372bdcbb688f103f1b7b066a1.png?crop=center&height=32&v=1652975349&width=32" >
+			<!-- {
+				"active": false,
+				"audible": false,
+				"autoDiscardable": true,
+				"discarded": false,
+				"favIconUrl": "https://geon.works/cdn/shop/files/16826b2372bdcbb688f103f1b7b066a1.png?crop=center&height=32&v=1652975349&width=32",
+				"groupId": 1109787575,
+				"height": 1392,
+				"highlighted": false,
+				"id": 900071172,
+				"incognito": false,
+				"index": 43,
+				"mutedInfo": {
+					"muted": false
+				},
+				"pinned": false,
+				"selected": false,
+				"status": "unloaded",
+				"title": "W1-AT – GEONWORKS",
+				"url": "https://geon.works/collections/w1-at",
+				"width": 1068,
+				"windowId": 900071125
+			} -->
+		</div>
+		<div class="tab " title="YourHouse" data-id="900076673" data-windowid="900076436" data-index="239" draggable="true">
+			<p class="tab-title">infamous - Google Search</p>
+			<p class="tab-url">https://www.google.com/search?q=myhouse</p>
+			<img src="https://www.google.com/favicon.ico" width="24px" height="24px" data-id="900076673" data-windowid="900076436" data-index="239">
+		</div>
+	</div>
+	</div>
+
+
+	</body>
+	</html>
