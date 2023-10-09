@@ -4,6 +4,7 @@
 	"version": "0.1.1",
 	"manifest_version": 3,
 	"permissions": ["tabs", "tabGroups", "bookmarks", "windows"],
+	"options_page": "options.html",
 	"action": {
 		"default_title": "Tabitha",
 		"defaul_icon": "icon.png",

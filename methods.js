@@ -322,6 +322,7 @@
 		handleMessage("exporting current window...");
 		const sessionData = await saveCurrentWindow();
 		downloadJSON(sessionData);
+		handleMessage("done");
 	};
 
 	async function importJSON() {
@@ -398,6 +399,7 @@
 				await discardTab(tab?.id);
 			}
 		});
+		handleMessage("done");
 	}
 
 	const handleTabs = async (e) => {
