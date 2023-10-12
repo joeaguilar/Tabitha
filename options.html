@@ -192,7 +192,7 @@
 				/* left: 0; */
 				bottom: 0;
 				/* right: 0; */
-				background: linear-gradient(transparent, var(--tabitha-body-color));
+				background: linear-gradient(transparent,74px,  var(--tabitha-body-color));
 			}
 			.tab-actions {
 				margin-bottom: 4px;
@@ -441,6 +441,10 @@
 				background: #f3cf8e;
 			}
 
+			.found {
+				background: #00fd73 !important;
+			}
+
 
 			/* Extra small devices (phones, 600px and down) */
 			/* @media only screen and (max-width: 600px) {
@@ -500,6 +504,11 @@
 			<button id="select-all">Select All</button>
 			<button id="show-groups">Show Groups</button>
 			<button id="show-duplicates">Show Duplicates</button>
+			<button id="select-searched">Select Searched</button>
+		</div>
+		<div id="search-controls">
+			<label for="search">Search Tabs</label>
+			<input id="search" name="search" type="text" placeholder="url to search">
 		</div>
 		<div class="grid-boy full">
 	        <div id="tab-items2">

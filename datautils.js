@@ -57,7 +57,8 @@ window._tabithaDataUtils = ((window) => {
 	const saveWindowBySelected = async (selected) => {
 		const tabs = await chrome.tabs.query({});
 		// const groups = await chrome.tabGroups.query({ windowId: windowId });
-		debugger;
+
+		;
 		const selectedTabs = selected.map((selectedEl) =>
 			getDataAttributes(selectedEl)
 		);

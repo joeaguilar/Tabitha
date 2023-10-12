@@ -98,15 +98,16 @@ const LABEL = {
 	WINDOW: {
 		Save: "Save",
 		Close: "Close",
-		Minimize: "Minimize",
 	},
 };
 
 (async () => {
 	const allSelected = [];
+	const allSearched = [];
 	let dragSourceElement;
 	let showDuplicates = false;
 	let showGroups = false;
+	let shouldSearch = false;
 	const getAllWindowDataRaw = async () => {
 		const allTabGroups = await chrome.tabGroups.query({});
 		const allWindows = await chrome.windows.getAll({});
@@ -117,6 +118,18 @@ const LABEL = {
 			groups: allTabGroups,
 			tabs: allTabs,
 		};
+	};
+
+	const getAllTabsDataRaw = async () => {
+		return {
+			windows: undefined,
+			groups: undefined,
+			tabs: await chrome.tabs.query({}),
+		};
+	};
+
+	const allSearchedToSelected = () => {
+		allSearched.forEach((el) => allSelected.push(el));
 	};
 
 	const doExportSelected = () => exportAllSelected(allSelected);
@@ -263,10 +276,6 @@ const LABEL = {
 	const handleTabithaAction2 = (e) => {
 		const payload = e.detail;
 		const { type } = payload || {};
-		// const { id: rawId, groupid, windowid } = payload || {};
-		// const id = Number(rawId);
-
-		console.log("handleTabithaAction#Have the payload", payload);
 
 		actionMap?.[type]?.[label]?.(payload);
 
@@ -276,7 +285,10 @@ const LABEL = {
 			},
 		};
 
-		const wrapInIdCallback = () => {};
+		const wrapInIdCallback =
+			(fn) =>
+			({ id }) =>
+				fn(id);
 
 		buttonActions = {
 			Close: ({ id }) => closeById(id),
@@ -291,45 +303,9 @@ const LABEL = {
 			Pin: ({ id }) => pinTabById(id),
 			Unpin: ({ id }) => unpinTabById(id),
 		};
-
-		switch (payload.label) {
-			// case LABEL.BUTTON.Close:
-			// 	closeById(id);
-			// 	break;
-			// case LABEL.BUTTON.Discard:
-			// 	discardTabById(id);
-			// 	break;
-			// case LABEL.BUTTON.Focus:
-			// 	setActiveTabById(id);
-			// 	break;
-			// case LABEL.BUTTON.HardReload:
-			// 	hardReloadById(id);
-			// 	break;
-			// case LABEL.BUTTON.SoftReload:
-			// 	softReloadById(id);
-			// 	break;
-			// case LABEL.BUTTON.Mute:
-			// 	muteTabById(id);
-			// 	break;
-			case LABEL.BUTTON.SetAutoDiscard:
-				toggleShouldDiscardById(id, true);
-				break;
-			case LABEL.BUTTON.UnsetAutoDiscard:
-				toggleShouldDiscardById(id, false);
-				break;
-			case LABEL.BUTTON.Deselect:
-				deselect(id);
-				break;
-			case LABEL.BUTTON.Pin:
-				pinTabById(id);
-				break;
-			case LABEL.BUTTON.Unpin:
-				unpinTabById(id);
-				break;
-			default:
-				console.log("Unsupported payload", payload);
-		}
 	};
+
+	const searchForTabs = async (key) => {};
 
 	const saveWindowBySelected = async (selected) => {
 		const tabs = await chrome.tabs.query({ windowId: windowId });
@@ -433,15 +409,6 @@ const LABEL = {
 
 	const moveTabOnDropEvent = (e) => {
 		const { index, windowid, groupid } = e?.target?.dataset || {};
-		// console.log(
-		// 	"moveTabOnDropEvent",
-		// 	e,
-		// 	e.target,
-		// 	e.target.dataset,
-		// 	index,
-		// 	groupid,
-		// 	windowid
-		// );
 		var tabId = e.dataTransfer.getData("text");
 		if (tabId && index && windowid) {
 			moveTab(Number(tabId), Number(index), Number(windowid));
@@ -486,8 +453,6 @@ const LABEL = {
 	function dragStart(e) {
 		const { currentTarget: target } = e || {};
 		const { id, type } = target.dataset || {};
-		// const id = e?.target?.dataset?.id;
-		console.log("dragStart", id, type, target);
 		e.dataTransfer.setData("text/plain", encodeData(type, id));
 		target.style.opacity = "0.4";
 
@@ -533,36 +498,11 @@ const LABEL = {
 
 	function dragOver(ev) {
 		ev.preventDefault();
-		// console.log("draggydrop", ev.target);
 	}
 
 	function dragEnd(e) {
 		e.currentTarget.style.opacity = "1";
-		console.log(e.target, e.currentTarget);
-		// e.target.classList.remove("dragover");
-		// dragSourceElement.remove("dragover");
-		// items.forEach(function (item) {
-		// 	item.classList.remove("dragover");
-		// });
 	}
-
-	// Turn off for now
-	// const drop = (e) => {
-	// 	e.preventDefault();
-	// 	e.stopPropagation();
-	// 	const moveIndex = e?.target?.dataset?.index;
-	// 	const windowId = e?.target?.dataset?.windowid;
-	// 	var tabId = e.dataTransfer.getData("text");
-	// 	// console.log("drop", e, tabId, moveIndex, windowId);
-	// 	if (tabId && moveIndex && windowId) {
-	// 		moveTab(Number(tabId), Number(moveIndex), Number(windowId));
-	// 	}
-	// 	if (dragSourceElement !== this) {
-	// 		dragSourceElement.innerHTML = this.innerHTML;
-	// 		this.innerHTML = e.dataTransfer.getData("text/html");
-	// 	}
-	// 	doLoadAll();
-	// };
 
 	const swapEls = (fromEl, toEl) => {
 		debugger;
@@ -580,13 +520,9 @@ const LABEL = {
 		allSelected.length = 0;
 	}
 
-	// window.deselectAll = deselectAll;
-
 	const groupSelected = async () => {
 		const selectedIds = allSelected.map(({ id }) => id);
 		createGroup(selectedIds, "Grouped");
-		// const group = await chrome.tabs.group({ tabIds });
-		// await chrome.tabGroups.update(group, { title: "Grouped" });
 	};
 
 	const createButton = (btnTypeClass, label, id, onClick) => {
@@ -611,7 +547,6 @@ const LABEL = {
 			</button>`;
 
 		const button = createElementFromHTML(buttonHTML);
-		// button.addEventListener("click", clickHandler);
 		return button;
 	};
 
@@ -624,7 +559,6 @@ const LABEL = {
 	const createSelectedTabControls = (btnProps) => {
 		const div = document.createElement("div");
 		div.classList.add("tab-actions");
-		// div.dataset.id = id;
 		overwriteDataAttributes(div, btnProps);
 
 		const allButtons = Object.keys(LABEL.BUTTON)
@@ -720,12 +654,8 @@ const LABEL = {
 				</div>`;
 
 				const tab = createElementFromHTML(seletedInfoEl);
-				// tab.addEventListener('drag', dragStart)
 				tab.setAttribute("draggable", true);
 				tab.addEventListener("dragstart", dragStart);
-				// tab.addEventListener("dragover", dragOver);
-				// tab.addEventListener("dragenter", dragEnter);
-				// tab.addEventListener("dragleave", dragLeave);
 				tab.addEventListener("dragend", dragEnd);
 				tab.addEventListener("drop", drop);
 				maybeSelected = tab;
@@ -778,10 +708,7 @@ const LABEL = {
 			allSelected.splice(allSelected.indexOf(found), 1);
 			found.classList.remove("selected");
 		}
-		//  else {
-		// 	allSelected.push(target);
-		// 	target.classList.add("selected");
-		// }
+
 		displayAllSelected();
 	}
 
@@ -789,13 +716,13 @@ const LABEL = {
 		ev.preventDefault();
 		ev.stopPropagation();
 		let target = ev?.target;
-		// let target = ev?.currentTarget;
+
 		let tagName = target?.tagName?.toLowerCase();
 		if (tagName === "img" || tagName === "span") {
 			target = target.parentNode;
 			tagName = target?.tagName?.toLowerCase();
 		}
-		// console.log(allSelected);
+
 		if (allSelected.includes(target)) {
 			allSelected.splice(allSelected.indexOf(target), 1);
 			target.classList.remove("selected");
@@ -835,8 +762,6 @@ const LABEL = {
 				windowId,
 			} = tabProps || {};
 			const sTitle = sanitize(title);
-			// console.log("windowId", windowId);
-			// console.log("groupId", groupId);
 			tabString = `<div class="tab ${isDuplicate ? " duplicate" : ""}${
 				active ? " active" : ""
 			}"  title="${
@@ -848,7 +773,7 @@ const LABEL = {
 		</div>`;
 
 			const tab = createElementFromHTML(tabString);
-			// TODO: Clean up the event handlers
+
 			tab.setAttribute("draggable", true);
 			tab.addEventListener("dragstart", dragStart);
 			tab.addEventListener("dragover", dragOver);
@@ -869,16 +794,32 @@ const LABEL = {
 		return [maybeTab, tabString];
 	};
 
-	// const getAllWindows = () => [...(document.querySelector('#tab-items2').children || [])];
 	const getAllTabsByWindowId = (windowid) =>
 		document.querySelector(`.tab-wrapper[data-windowid="${windowid}"]`)
 			.children;
-	// const getBySelector = () => document.querySelector('');
-	// const getWindowById = () => document.querySelector('#tab-items2')
-	// const getGroupById = () =
-	// const getTabById = () =
+
+	const getAllTabs = () => [...document.querySelectorAll(`.tab`)];
+
+	const doSearch = async (e) => {
+		const term = e.currentTarget.value;
+		console.log("Searching for term", term);
+		if (term.length < 3) return;
+
+		const tabs = getAllTabs();
+		allSearched.length = 0;
+		tabs.forEach((el) => {
+			if (el.dataset.url.includes(term)) {
+				el.classList.add("found");
+				allSearched.push(el);
+			} else {
+				el.classList.remove("found");
+			}
+		});
+	};
 
 	const doUpdate = async () => {
+		const tStart = performance.now();
+
 		const df = document.createDocumentFragment();
 		const maybeTabHolder = document.querySelector(`[id="tab-items2"]`);
 		const tabHolder = maybeTabHolder
@@ -1020,38 +961,54 @@ const LABEL = {
 
 		tabHolder.appendChild(df);
 		displayAllSelected();
+
+		const tStop = performance.now();
+		console.log(`it took this long to update ${tStop - tStart}`);
 	};
 
 	document.addEventListener("DOMContentLoaded", async () => {
-		[toggleShowGroups, toggleShowDuplicates].forEach((fn, ind) => {
-			// debugger;
-			const selector = ind === 0 ? "#show-groups" : "#show-duplicates";
+		const events = {
+			"#show-groups": toggleShowGroups,
+			"#show-duplicates": toggleShowDuplicates,
+			"#export-selected": doExportSelected,
+			"#deselect-all": deselectAll,
+			"#select-searched": allSearchedToSelected,
+		};
+
+		Object.entries(events).forEach(([selector, fn]) => {
 			const fnHandler = (e) => {
 				e ? fn(e) : fn();
-				// doLoadAll();
-				// Just toggled
+
 				doUpdate();
 			};
 			const el = document.querySelector(selector);
-			console.log(el, selector);
 			el.addEventListener("click", fnHandler);
 		});
 
-		[doExportSelected, deselectAll].forEach((fn, ind) => {
-			const selector = ind === 0 ? "#export-selected" : "#deselect-all";
-			const fnHandler = (e) => {
-				e ? fn(e) : fn();
-				// doLoadAll();
-				// Just toggled
-				doUpdate();
-			};
-			const el = document.querySelector(selector);
-			console.log(el, selector);
-			el.addEventListener("click", fnHandler);
-		});
-		// debugger;
-		// doLoadAll();
-		// Just toggled
+		document.querySelector("#search").addEventListener("change", doSearch);
+		document.querySelector("#search").addEventListener("keyup", doSearch);
+		// [toggleShowGroups, toggleShowDuplicates].forEach((fn, ind) => {
+		// 	const selector = ind === 0 ? "#show-groups" : "#show-duplicates";
+		// 	const fnHandler = (e) => {
+		// 		e ? fn(e) : fn();
+
+		// 		doUpdate();
+		// 	};
+		// 	const el = document.querySelector(selector);
+		// 	el.addEventListener("click", fnHandler);
+		// });
+
+		// [doExportSelected, deselectAll].forEach((fn, ind) => {
+		// 	const selector = ind === 0 ? "#export-selected" : "#deselect-all";
+		// 	const fnHandler = (e) => {
+		// 		e ? fn(e) : fn();
+
+		// 		doUpdate();
+		// 	};
+		// 	const el = document.querySelector(selector);
+		// 	el.addEventListener("click", fnHandler);
+		// });
+
 		doUpdate();
 	});
 
@@ -1063,84 +1020,51 @@ const LABEL = {
 			return;
 		}
 		Object.entries(updateInfo).forEach(([k, v]) => {
-			// console.log("Setting ", v, " on ", k, ".");
 			el.dataset[k] = v;
 		});
-		console.log(
-			"What will this event listener give to us?",
-			tabId,
-			updateInfo,
-			Object.entries(updateInfo)
-		);
-		// debugger;
-		// doLoadAll();
 		doUpdate();
 	});
 
-	const whatHappensHere = (eventName) => (a, b, c, d) => {
+	const chromeEventHandler = (eventName) => (a, b, c, d) => {
 		if (eventName !== "windows.onFocusChanged") {
 			doUpdate();
+			// Since we are listenning for all events,
+			// the only event that gives -1 is the windows.onFocusChanged
+			// Which means we dont want to update
 		} else if (a > -1) {
 			doUpdate();
 		}
 
-		console.log("This is what we get from the event", eventName);
-		console.log("a", a);
-		console.log("b", b);
-		console.log("c", c);
-		console.log("d", d);
+		// console.log("This is what we get from the event", eventName);
+		// console.log("a", a);
+		// console.log("b", b);
+		// console.log("c", c);
+		// console.log("d", d);
 	};
-
-	// const createNewTabFromEvent = (tabMetadata) => {
-	// 	createTabText(tabMetadata);
-	// 	doLoadAll();
-	// };
 
 	const moveTabs = (tabid, moveConfig) => {
-		// const { fromIndex, toIndex, windowId } = moveConfig;
-		// const allTabsInWindow = getAllTabsByWindowId(windowId);
-		// const fromEl = document.querySelector(`.tab[data-id="${tabid}"]`);
-		// const toEl = [
-		// 	...document.querySelectorAll(`.tab[data-index="${toIndex}"]`),
-		// ].filter((el) => el?.dataset?.windowid === String(windowId))[0];
-
-		// console.log(
-		// 	fromEl,
-		// 	toEl,
-		// 	[...document.querySelectorAll(`.tab[data-index="${toIndex}"]`)].map(
-		// 		(el) => el.dataset.windowid
-		// 	),
-		// 	windowId
-		// );
-
-		// console.log(
-		// 	"Weeee movin!",
-		// 	tabid,
-		// 	moveConfig,
-		// 	fromEl,
-		// 	toEl,
-		// 	fromIndex,
-		// 	toIndex
-		// );
-		// doLoadAll();
 		doUpdate();
 	};
-
 	chrome.tabs.onCreated.addListener((newTabInfo) => {
-		whatHappensHere("onCreated")(newTabInfo);
+		chromeEventHandler("onCreated")(newTabInfo);
 		doUpdate();
 	});
-	// chrome.tabs.onUpdated.addListener(whatHappensHere("onUpdated"));
+
 	chrome.tabs.onMoved.addListener(moveTabs);
-	chrome.tabs.onRemoved.addListener(whatHappensHere("onRemoved"));
-	chrome.tabs.onReplaced.addListener(whatHappensHere("onReplaced"));
-	chrome.tabs.onDetached.addListener(whatHappensHere("onDetached"));
-	chrome.tabs.onAttached.addListener(whatHappensHere("onAttached"));
-	chrome.tabs.onActivated.addListener(whatHappensHere("onActivated"));
+	chrome.tabs.onRemoved.addListener(chromeEventHandler("onRemoved"));
+	chrome.tabs.onReplaced.addListener(chromeEventHandler("onReplaced"));
+	chrome.tabs.onDetached.addListener(chromeEventHandler("onDetached"));
+	chrome.tabs.onAttached.addListener(chromeEventHandler("onAttached"));
+	chrome.tabs.onActivated.addListener(chromeEventHandler("onActivated"));
 	chrome.windows.onFocusChanged.addListener(
-		whatHappensHere("windows.onFocusChanged")
+		chromeEventHandler("windows.onFocusChanged")
 	);
-	chrome.windows.onCreated.addListener(whatHappensHere("windows.onCreated"));
-	chrome.windows.onRemoved.addListener(whatHappensHere("windows.onRemoved"));
-	// chrome.storage.onChanged.addListener(whatHappensHere("storage.onChanged"));
+	chrome.windows.onCreated.addListener(
+		chromeEventHandler("windows.onCreated")
+	);
+	chrome.windows.onRemoved.addListener(
+		chromeEventHandler("windows.onRemoved")
+	);
+	// chrome.tabs.onUpdated.addListener(chromeEventHandler("onUpdated"));
+	// chrome.storage.onChanged.addListener(chromeEventHandler("storage.onChanged"));
 })();
