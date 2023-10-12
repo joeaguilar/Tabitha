@@ -381,7 +381,7 @@ const LABEL = {
 	};
 
 	const moveItemOnDropEvent = (e) => {
-		debugger;
+		// debugger;
 		const { index, windowid, groupid, type } =
 			e?.currentTarget?.dataset || {};
 		const [fromType, itemId] = decodeData(
@@ -505,7 +505,7 @@ const LABEL = {
 	}
 
 	const swapEls = (fromEl, toEl) => {
-		debugger;
+		// debugger;
 		const marker = document.createElement("div");
 		fromEl.parentNode.insertBefore(marker, fromEl);
 		toEl.parentNode.insertBefore(fromEl, toEl);
