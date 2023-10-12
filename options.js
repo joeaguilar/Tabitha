@@ -818,7 +818,7 @@ const LABEL = {
 	};
 
 	const doUpdate = async () => {
-		const tStart = performance.now();
+		// const tStart = performance.now();
 
 		const df = document.createDocumentFragment();
 		const maybeTabHolder = document.querySelector(`[id="tab-items2"]`);
@@ -962,8 +962,8 @@ const LABEL = {
 		tabHolder.appendChild(df);
 		displayAllSelected();
 
-		const tStop = performance.now();
-		console.log(`it took this long to update ${tStop - tStart}`);
+		// const tStop = performance.now();
+		// console.log(`it took this long to update ${tStop - tStart}`);
 	};
 
 	document.addEventListener("DOMContentLoaded", async () => {
