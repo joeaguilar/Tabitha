@@ -381,7 +381,6 @@ const LABEL = {
 	};
 
 	const moveItemOnDropEvent = (e) => {
-		// debugger;
 		const { index, windowid, groupid, type } =
 			e?.currentTarget?.dataset || {};
 		const [fromType, itemId] = decodeData(
@@ -802,8 +801,17 @@ const LABEL = {
 
 	const doSearch = async (e) => {
 		const term = e.currentTarget.value;
-		// console.log("Searching for term", term);
-		if (term.length < 3) return;
+
+		if (term.length === 0) {
+			allSearched.length = 0;
+			[...document.querySelectorAll(".tab.found")].forEach((el) => {
+				el.classList.remove("found");
+			});
+		}
+
+		if (term.length < 3) {
+			return;
+		}
 
 		const tabs = getAllTabs();
 		allSearched.length = 0;
