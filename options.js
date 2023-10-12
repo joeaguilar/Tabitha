@@ -233,7 +233,7 @@ const LABEL = {
 		const { id: rawId, groupid, windowid } = payload || {};
 		const id = Number(rawId);
 
-		console.log("handleTabithaAction#Have the payload", payload);
+		// console.log("handleTabithaAction#Have the payload", payload);
 		switch (payload.label) {
 			case LABEL.BUTTON.Close:
 				closeById(id);
@@ -802,7 +802,7 @@ const LABEL = {
 
 	const doSearch = async (e) => {
 		const term = e.currentTarget.value;
-		console.log("Searching for term", term);
+		// console.log("Searching for term", term);
 		if (term.length < 3) return;
 
 		const tabs = getAllTabs();
